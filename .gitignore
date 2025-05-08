@@ -1,0 +1,4 @@
+scripts/
+*/*/*.npy
+*/*/*.ipynb
+*/*/*.csv
