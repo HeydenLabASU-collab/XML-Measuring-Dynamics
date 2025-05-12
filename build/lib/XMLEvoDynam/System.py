@@ -5,15 +5,15 @@ from XMLEvoDynam.MLInputTools import *
 # ensure that dimensions are the same between systems
 
 class System:
-    def __init__(self, system_dir, systems, group1, group2, cutoff, input_file, index_file, output_file, n_samples, n_features):
+    def __init__(self, system_dir, systems, group1, group2, cutoff, input_file, index_file, output_file):
         self.system_dir = system_dir
         self.systems = systems
         self.group1 = group1
         self.group2 = group2
         self.column_names = MLInputTools.construct_feature_names(group1, group2)
         self.keeper_idx = []
-        self.n_features = n_features
-        self.n_samples = n_samples
+        self.n_features = 0
+        self.n_samples = 0
         self.threshold = lambda v: (np.array(v) < cutoff)
         self.input_file = input_file
         self.index_file = index_file
@@ -84,5 +84,5 @@ class System:
 
     def load_system_from_dictionary(fIn):
         MLinfo = np.load(f"{fIn}", allow_pickle=True).item()
-        return System(MLinfo['system_dir'], MLinfo['systems'], MLinfo['g1'], MLinfo['g2'], MLinfo['cutoff'], MLinfo['input_file'], MLinfo['index_file'], fIn, MLinfo['n_samples'], MLinfo['n_features'])
+        return System(MLinfo['system_dir'], MLinfo['systems'], MLinfo['g1'], MLinfo['g2'], MLinfo['cutoff'], MLinfo['input_file'], MLinfo['index_file'], fIn)
 

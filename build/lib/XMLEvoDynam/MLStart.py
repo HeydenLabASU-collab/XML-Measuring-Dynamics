@@ -6,8 +6,8 @@ class MLStart:
     def __init__(self, SYSTEM, split_percent):
         self.system = SYSTEM
         self.split_percent = split_percent
-        self.n_states = len(SYSTEM.systems)
-        self.n_samples_per_structure = int(SYSTEM.n_features/len(SYSTEM.systems))
+        self.n_states = len(self.system['systems'])
+        self.n_samples_per_structure = int(self.system['n_features']/self.n_states)
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -17,8 +17,7 @@ class MLStart:
 
 
     def define_train_test_groups(self):
-        print(self.system, self.system.n_samples, self.system.n_features)
-        dataset = np.memmap(f"{self.system.input_file}", dtype='float32', mode='r', shape=(self.system.n_samples, self.system.n_features))
+        dataset = np.memmap(f"{self.system['input_file']}", dtype='float32', mode='r', shape=(self.system['n_samples'], self.system['n_features']))
         X = dataset[:, :-2]
         y = dataset[:, -2]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=self.split_percent, random_state=42)
