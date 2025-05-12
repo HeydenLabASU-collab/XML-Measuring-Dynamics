@@ -3,3 +3,4 @@ scripts/
 */*/*.ipynb
 */*/*.csv
 XMLEvoDynam.egg-info/
+.idea/
