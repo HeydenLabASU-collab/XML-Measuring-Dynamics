@@ -2,3 +2,4 @@ scripts/
 */*/*.npy
 */*/*.ipynb
 */*/*.csv
+XMLEvoDynam.egg-info/
