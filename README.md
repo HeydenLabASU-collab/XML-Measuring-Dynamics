@@ -36,14 +36,14 @@ pip3 install -e .
 
 A sample workflow is provided in `scripts_final/` and is visualized below.
 
-![alt text](imgs/layout1.png "Sample Workflow")
+![alt text](imgs/layout1.jpg "Sample Workflow")
 
 For example, Random Forests + Feature Importance can be used to distinguish atomic differences between simulations of a WT and a mutant protein. The goal of the code is to provide a flexible codebase to 
 
 1. Compute atomic features (System.py)
 2. Enable machine learning applications (ML*.py)
 
-![alt text](imgs/layout2.png "Example Workflow on two trajectories")
+![alt text](imgs/layout2.jpg "Example Workflow on two trajectories")
 
 ## todo
 

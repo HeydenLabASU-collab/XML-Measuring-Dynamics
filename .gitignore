@@ -2,5 +2,6 @@ scripts/
 */*/*.npy
 */*/*.ipynb
 */*/*.csv
-XMLEvoDynam.egg-info/
-.idea/
+/.idea/
+/XMLEvoDynam.egg-info/
+/build/
