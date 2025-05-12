@@ -22,7 +22,8 @@ label = args.label
 
 reference = f"Directory/Containing/Gro/File"
 trajectory = f"Directory/Containing/Trajectory"
-
+reference = f"/scratch/masauer2/Regeneron_USample_Compare/{args.system}/00_system_prep/prot.gro"
+trajectory = f"/scratch/masauer2/Regeneron_USample_Compare/{args.system}/03_100ns/sample-NPT_pbc.trr"
 pace = 1 # Stride for trajectory readout
 
 # Indexes defining the two groups to compute contact distances between

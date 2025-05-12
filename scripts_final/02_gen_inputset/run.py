@@ -16,7 +16,7 @@ INDEX_FILE = "keeper.npy" # output file containing column idxs of features withi
 OUTPUT_FILE = "MLinfo.npy" # output file containing dictionary to store info about SYSTEMs
 
 # Generate a new "System" which contains information about all trajectories
-epitope_system = System(SYSTEM_DIR, SYSTEM, GROUP1, GROUP2, CUTOFF_DISTANCE, INPUT_FILE, INDEX_FILE, OUTPUT_FILE)
+epitope_system = System(SYSTEM_DIR, SYSTEM, GROUP1, GROUP2, CUTOFF_DISTANCE, INPUT_FILE, INDEX_FILE, OUTPUT_FILE, 0, 0)
 
 # For each feature (residue pairs), figure out which columns contain at least one sample (timestep) within the cutoff
 keeper_idx = epitope_system.define_columns_within_cutoff()

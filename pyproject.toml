@@ -21,7 +21,8 @@ dependencies = [
   "scipy",
   "matplotlib",
   "pandas",
-  "MDAnalysis"
+  "MDAnalysis",
+  "scikit-learn"
 ]
 
 [project.optional-dependencies]

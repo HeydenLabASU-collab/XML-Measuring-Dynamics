@@ -14,7 +14,7 @@
 module load mamba/latest
 
 # Activate environment
-# source activate MLPipeline
+source activate MLPipeline
 
 python3 run.py --system VGSDWRFLRGYHQYQ --replica 1 --label 0
 python3 run.py --system VGSDWRFLRGYHQYA --replica 1 --label 1
