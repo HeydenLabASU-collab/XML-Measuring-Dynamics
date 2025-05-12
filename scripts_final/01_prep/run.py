@@ -20,10 +20,14 @@ systemname = args.system
 replica = args.replica
 label = args.label
 
-reference = f"/scratch/masauer2/Regeneron_USample_Compare/{args.system}/00_system_prep/prot.gro"
-trajectory = f"/scratch/masauer2/Regeneron_USample_Compare/{args.system}/03_100ns/sample-NPT_pbc.trr"
+reference = f"Directory/Containing/Gro/File"
+trajectory = f"Directory/Containing/Trajectory"
 
-pace = 1
+pace = 1 # Stride for trajectory readout
+
+# Indexes defining the two groups to compute contact distances between
 GROUP1 = np.arange(0,391,1)
 GROUP2 = np.arange(391,405,1)
+
+# Generate feature set for the system
 MLInputTools.construct_XML_input(reference, trajectory, False, pace, GROUP1, GROUP2, label, f"{systemname}_R{replica}", nBatches = 10)

@@ -5,11 +5,23 @@ from scipy.spatial.distance import cdist
 from tqdm import tqdm
 import pandas as pd
 
+# STATIC CLASS DEFINING FUNCTIONS TO COMPUTE FEATURES
 class MLInputTools:
     
     def construct_feature_names(GROUP1, GROUP2):
+        """
+        Generate a string array containing column names in the form "GROUP1ATOM_GROUP2ATOM"
+
+        Args:
+            GROUP1 (array): Array of atom indexes
+            GROUP2 (array): Array of atom indexes
+        """
+
+        # Empty array for column names
         columns = np.empty(int(np.shape(GROUP1)[0]*np.shape(GROUP2)[0]), dtype=object)
         c_num = 0
+
+        # For each pair of atom/residue names, write out the associated column name
         for g1 in range(len(GROUP1)):
             for g2 in range(len(GROUP2)):
                 columns[c_num] = f"{GROUP1[g1]}_{GROUP2[g2]}"
@@ -17,14 +29,27 @@ class MLInputTools:
         return columns
     
     def euclidean_distance(value):
+        # Distance between (0,0,0) and (value[0], value[1], value[2])
         return (value[0]**2 + value[1]**2 + value[2]**2)**(1/2)
     
     def import_trr(reference_structure, trajectory):
+        # Import trajectory with MDAnalysis
         u = mda.Universe(reference_structure, trajectory)
         return u
     
     def compute_com_distance(u, pace, batch=False, batchStart = -1, batchEnd = -1):
-    
+        """
+        Compute the center of mass distance between all residues in group 1 and group 2
+
+        Args:
+            u (MDAnalysis Universe): Universe containing trajectory
+            pace (int): stride (i.e how many steps to skip between analysis) -> 1 = every timestep
+            batchStart: start timestep of batch (-1 = no batch)
+            batchEnd: end timestep of batch (-1 = no batch)
+
+        Return:
+            com_array (2D np.array): array containing all center of mass distances between group 1 and group 2 residues
+        """
         n_residues = len(u.residues)
         if batch is True and batchStart != -1 and batchEnd != -1:
             n_frames = len(u.trajectory[batchStart:batchEnd:pace])
@@ -46,9 +71,24 @@ class MLInputTools:
     
     
     def compute_feature_matrix(com_array, group1, group2, pace):
+        """
+        Compute the center of mass distance between all residues in group 1 and group 2
+
+        Args:
+            com_array (2D np.array): array containing all center of mass distances between group 1 and group 2 residues
+            group1 (array): Array of atom indexes
+            group2 (array): Array of atom indexes
+            pace (int): stride (i.e how many steps to skip between analysis) -> 1 = every timestep
+
+        Returns:
+            feature_array (2D np.array): Array, dimensions -> np.shape(com_array) x T (number of timesteps), containing
+                                         distances for each timestep
+        """
         feature_list = []
         for frame in tqdm(range(com_array.shape[0]), total=com_array.shape[0], desc="Feature Matrix"):
             coms = com_array[frame]
+
+            # IMPLEMENT: cdist should be any feature measure (i.e interaction energy)
             D = cdist(coms[group1], coms[group2], metric='euclidean')
             feature_list.append(D)
     
@@ -58,26 +98,34 @@ class MLInputTools:
     
     
     def weights_to_bias(wfile):
+        # PLUMED -> CONVERT WEIGHTS TO BIAS
         bKT=2.5
         wk = np.exp(np.loadtxt(wfile, comments="#")[:,-1]/bKT)
         return wk/np.sum(wk)
     
     def get_dt_label(nFrames):
+        # Get indexes for each timestep
         return np.arange(0,nFrames,1).reshape((nFrames,1))
     
     def get_identity_label(nFrames, label):
+        # Return an array full of label values
         return np.full(nFrames, label, dtype=int).reshape((nFrames,1))
     
     def get_final_XML_input(features, bias, replica, dt):
+        # Combine feature matrix with weights, labels, and timesteps
         return np.concatenate((features, bias, replica, dt), axis=1)
     
     def get_batch_endpoints(batch_size, nFrames):
+        # Given a batch size and a number of frames, compute batch start and end
         batch_start = np.ceil(np.arange(0, 1, batch_size)*nFrames).astype(int)
         batch_end = np.ceil(np.arange(batch_size, 1+batch_size, batch_size)*nFrames).astype(int)
         return batch_start, batch_end
     
     def get_batch_points(nBatches, nFrames):
+        # Number of frames in a batch
         frames = np.arange(0,nFrames,1)
+
+        # Indexes in a given batch
         batchFrames = []
         batchStart = np.round(np.linspace(0, nFrames, nBatches+1)).astype(int)
         for batch in range(len(batchStart)-1):
@@ -85,10 +133,20 @@ class MLInputTools:
         return batchFrames
     
     def construct_XML_input(reference, trajectory, weights, pace, g1, g2, featureLabel, fOut, nBatches = -1):
+        """
+        Driver script to generate a .npy file containing feature values for a given trajectory (or batch within a trajectory)
 
-        
-        #print(f"Generating Column Names")
-        #column_names = MLInputTools.construct_feature_names(g1, g2)
+        Args:
+                reference (str): Filename pointing to a .gro file containing initial coordinates of a trajectory
+                trajectory (str): Filename pointing to a .trr file containing trajectory of interest
+                weights (np.array): weights of each sample (1 for all if unbiased trajectory)
+                pace (int): stride (i.e how many steps to skip between analysis) -> 1 = every timestep
+                g1 (array): Array of atom indexes
+                g2 (array): Array of atom indexes
+                featureLabel (int): label to assign to the trajectory
+                fOut (str): Filename for the output .npy file
+                nBatches (int): If -1 -> no batches, int > 0 -> number of batches
+        """
     
         print(f"Import Trajectory")
         t = MLInputTools.import_trr(reference, trajectory)
